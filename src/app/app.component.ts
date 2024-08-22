@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 // material : 
 import { MatFormFieldModule, MatError,  MatFormField,  MatSuffix,} from '@angular/material/form-field';
 import { MatTable } from '@angular/material/table';
@@ -15,17 +15,19 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatInput } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {MatSelectModule} from '@angular/material/select';
 
 
 
-export interface UserData {
+export interface MendeleevData {
   id: string;
   name: string;
   progress: string;
   color: string;
 }
 
-const ELEMENT_DATA: UserData[] = [
+// { id: '1', name: 'Hydrogen', progress: '10%', color: 'lightblue' },
+const ELEMENT_DATA: MendeleevData[] = [
   { id: '1', name: 'Hydrogen', progress: '10%', color: 'lightblue' },
   { id: '2', name: 'Helium', progress: '20%', color: 'lightgreen' },
   { id: '3', name: 'Lithium', progress: '30%', color: 'lightpink' },
@@ -73,6 +75,10 @@ const ELEMENT_DATA: UserData[] = [
     // MatIconButton,
     // MatSuffix,
 
+    MatSelectModule, 
+    FormsModule, 
+    ReactiveFormsModule,
+
     MatTableModule,
     MatTable,
     MatSortModule,
@@ -93,8 +99,13 @@ const ELEMENT_DATA: UserData[] = [
 })
 export class AppComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['select', 'id', 'name', 'progress', 'color'];
-  dataSource = new MatTableDataSource<UserData>(ELEMENT_DATA);
-  selection = new SelectionModel<UserData>(true, []);
+  dataSource = new MatTableDataSource<MendeleevData>(ELEMENT_DATA);
+  // colorList: string[] = ELEMENT_DATA.map(item => item.color); 
+  // unique values and sorted alphabetically
+  colorList: string[] = Array.from(new Set(ELEMENT_DATA.map(item => item.color))).sort((a, b) => a.localeCompare(b));
+  
+  // colorList: string[] = this.dataSource.data.map(item => item.color);
+  selection = new SelectionModel<MendeleevData>(true, []);
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -103,6 +114,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     // Other initialization code if needed
+    this.selectedColors.valueChanges.subscribe(selectedValues => {
+      console.log('selectedValues:', selectedValues);
+      this.applyColorFilter(selectedValues);
+    });
   }
 
   ngAfterViewInit() {
@@ -110,14 +125,39 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
+  /*************** */
+
+
+  selectedColors = new FormControl('');
+  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+
+
   applyFilter(event: Event) {
+    // input text on name column
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
+    // multi select on color column
+    // if (this.selectedColors && this.selectedColors.value && this.selectedColors.value.length > 0) {
+    //   this.dataSource.filter = this.selectedColors.value;
+    // } 
+    // pagination
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
   }
+
+
+  // applyColorFilter(selectedValues: string[]) {
+  applyColorFilter(selectedValues: any) {
+    if (selectedValues && selectedValues.length > 0) {
+      this.dataSource.data = ELEMENT_DATA.filter(item => selectedValues.includes(item.color));
+    } 
+    // else {
+    //   // If no colors are selected, reset to the full list
+    //   this.dataSource.data = ELEMENT_DATA;
+    // }
+  }
+
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -131,7 +171,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       : this.dataSource.data.forEach((row) => this.selection.select(row));
   }
 
-  checkboxLabel(row?: UserData): string {
+  checkboxLabel(row?: MendeleevData): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
@@ -140,3 +180,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }`;
   }
 }
+// export class SelectMultipleExample {
+//   toppings = new FormControl('');
+//   toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+// }
