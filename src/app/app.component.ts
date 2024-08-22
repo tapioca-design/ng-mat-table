@@ -12,7 +12,11 @@ import { MatTable } from '@angular/material/table';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
 import { SelectionModel } from '@angular/cdk/collections';
+import { FormsModule } from '@angular/forms';
+import { MatPaginatorModule } from '@angular/material/paginator';
+
 
 export interface UserData {
   id: string;
@@ -54,7 +58,6 @@ const ELEMENT_DATA: UserData[] = [
   { id: '30', name: 'Zinc', progress: '60%', color: 'lightgray' },
 ];
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -72,6 +75,10 @@ const ELEMENT_DATA: UserData[] = [
     MatSuffix,
     DecimalPipe,
     MatCheckboxModule,
+    MatInputModule,
+    MatPaginator,
+    MatPaginatorModule,
+    FormsModule,
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
@@ -82,6 +89,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  filterValue: string = '';
+
   ngOnInit() {
     // Other initialization code if needed
   }
@@ -89,6 +98,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   isAllSelected() {
