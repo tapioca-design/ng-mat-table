@@ -1,19 +1,194 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
+@use "base/material-theme" as theme;
+@use "base/typography";
+@use "material-symbols/outlined";
+@include mat.core;
 
-// Define your color palettes using the new `mat.define-palette` method
-$primary: mat.define-palette(mat.$indigo-palette);
-$accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+:root {
+  // Sizes
+  --max-content-width: 80rem;
 
-// Create the theme object using `mat.define-light-theme` or `mat.define-dark-theme`
-$theme: mat.define-light-theme((
-  color: (
-    primary: $primary,
-    accent: $accent,
-  ),
-));
+  // Fonts
+  --font-family-base: wla-sans, "Helvetica", "Arial", sans-serif;
+  --font-family-monospace: "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono",
+    "Courier New", monospace;
 
-// Apply the theme to all components
-@include mat.all-component-themes($theme);
+  // UI colors
+  --color-blue: #305da8;
+  --color-gold: #9c8f62;
+  --color-black: #15141a;
+  --color-white: #ffffff;
+  --color-light-grey: #fafafa;
+  --color-grey: #a6a6a6;
 
-// Optionally, include the typography styles
-@include mat.typography($theme);
+  // Status colors
+  --color-status-success: #4caf50;
+  --color-status-pending: #009688;
+  --color-status-warning: #ff5722;
+  --color-status-unavailable: #6c757d;
+
+  // UI elements
+  --header-height: 5rem;
+
+  // Material overrides
+  --mdc-filled-button-container-shape: 0px;
+  --mdc-filled-button-label-text-weight: 600;
+  --mdc-filled-button-container-height: 2.5rem;
+  --mat-filled-button-horizontal-padding: 1.25rem;
+
+  --mdc-outlined-button-container-shape: 0px;
+  --mdc-outlined-button-label-text-weight: 600;
+  --mdc-outlined-button-container-height: 2.5rem;
+  --mat-outlined-button-horizontal-padding: 1.25rem;
+
+  --mdc-outlined-text-field-outline-color: var(--color-grey);
+  --mdc-outlined-text-field-disabled-outline-color: var(--color-grey);
+
+  --mdc-snackbar-container-shape: 0px;
+
+  --mat-form-field-error-text-color: var(--color-status-warning);
+
+  --mat-paginator-container-background-color: var(--color-white);
+
+  --mat-select-placeholder-text-color: var(--color-grey);
+  --mat-select-disabled-trigger-text-color: var(--color-black);
+
+  --mdc-outlined-text-field-container-shape: 0px;
+  --mdc-outlined-text-field-input-text-placeholder-color: var(--color-grey);
+  --mdc-outlined-text-field-disabled-input-text-color: var(--color-black);
+
+  --mat-expansion-container-background-color: color-mix(
+    in sRGB,
+    var(--color-blue),
+    transparent 95%
+  );
+
+  --mat-expansion-container-shape: 0px;
+}
+
+/* stylelint-disable-next-line selector-max-universal */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  @include mat.core-theme(theme.$light-theme);
+  @include mat.button-theme(theme.$light-theme);
+  @include mat.checkbox-theme(theme.$light-theme);
+  @include mat.menu-theme(theme.$light-theme);
+  @include mat.snack-bar-theme(theme.$light-theme);
+  @include mat.form-field-theme(theme.$light-theme);
+  @include mat.select-theme(theme.$light-theme);
+  @include mat.paginator-theme(theme.$light-theme);
+  @include mat.tooltip-theme(theme.$light-theme);
+  @include mat.expansion-theme(theme.$light-theme);
+
+  font: 100% / 1.5 var(--font-family-base);
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-light-grey);
+  color: var(--color-black);
+}
+
+p,
+ul,
+ol {
+  margin: 0;
+  margin-block-end: 0.5rem;
+
+  &:last-child {
+    margin-block-end: 0;
+  }
+}
+
+hr {
+  grid-column: 1 / -1;
+  margin: 0;
+  border: 0;
+  border-block-start: 1px solid var(--color-grey);
+}
+
+a {
+  color: var(--color-blue);
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
+}
+
+[hidden] {
+  /* stylelint-disable-next-line declaration-no-important */
+  display: none !important;
+}
+
+.secondary {
+  @include mat.button-color(theme.$light-theme, $color-variant: secondary);
+  @include mat.checkbox-color(theme.$light-theme, $color-variant: secondary);
+}
+
+.tertiary {
+  @include mat.button-color(theme.$light-theme, $color-variant: tertiary);
+  @include mat.checkbox-color(theme.$light-theme, $color-variant: tertiary);
+}
+
+.mdc-snackbar {
+  .mat-mdc-snackbar-surface {
+    padding-inline-end: 0;
+  }
+
+  .mdc-snackbar__label {
+    padding: 0;
+  }
+}
+
+.mat-mdc-form-field-text-suffix {
+  margin: calc(var(--mat-form-field-container-vertical-padding) * -1)
+    calc(var(--mat-form-field-container-vertical-padding) * -1)
+    calc(var(--mat-form-field-container-vertical-padding) * -1)
+    var(--mat-form-field-container-vertical-padding);
+  padding: var(--mat-form-field-container-vertical-padding);
+  border-inline-start: 1px solid var(--color-grey);
+  background-color: var(--color-light-grey);
+  color: var(--color-black);
+
+  .mat-mdc-form-field-has-icon-suffix & {
+    order: 1;
+    margin-inline: 0;
+  }
+}
+
+.mat-mdc-form-field {
+  border-radius: var(--mdc-outlined-text-field-container-shape);
+
+  &.mat-form-field-disabled {
+    background-color: var(--color-light-grey);
+  }
+}
+
+.mat-form-field-disabled .mat-mdc-select-arrow-wrapper {
+  display: none;
+}
+
+.mat-expansion-panel {
+  border: 1px solid var(--color-grey);
+
+  .mat-expansion-panel-header {
+    padding-inline: 1rem;
+    /* stylelint-disable-next-line declaration-no-important */
+    background-color: transparent !important;
+    font-weight: 700;
+  }
+
+  .mat-expansion-panel-body {
+    padding: 0 1rem 1rem;
+  }
+}
