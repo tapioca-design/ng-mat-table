@@ -14,6 +14,7 @@ import {
 import { MatTable } from '@angular/material/table';
 import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 export interface PeriodicElement {
@@ -40,6 +41,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   standalone: true,
   imports: [
     CommonModule,
+    // BrowserAnimationsModule,
     RouterOutlet,
     MatTableModule,
     MatSortModule,
@@ -69,6 +71,7 @@ export class AppComponent {
 
   // @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatSort) sort!: MatSort;
+  // @ViewChild(MatSort) sort: MatSort;
 
   onSortChange(event: Sort) {
     console.log('Sort event:', event);
