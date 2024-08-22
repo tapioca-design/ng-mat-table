@@ -4,6 +4,12 @@
 @use "material-symbols/outlined";
 @include mat.core;
 
+
+// @include mat.form-field-theme(theme.$light-theme);
+// @include mat.paginator-theme(theme.$light-theme);
+// @include mat.input-theme(theme.$light-theme);
+
+
 :root {
   // Sizes
   --max-content-width: 80rem;
@@ -82,9 +88,10 @@ html {
   @include mat.checkbox-theme(theme.$light-theme);
   @include mat.menu-theme(theme.$light-theme);
   @include mat.snack-bar-theme(theme.$light-theme);
-  @include mat.form-field-theme(theme.$light-theme);
+  @include mat.form-field-theme(theme.$light-theme);  // Form field styles
   @include mat.select-theme(theme.$light-theme);
-  @include mat.paginator-theme(theme.$light-theme);
+  @include mat.paginator-theme(theme.$light-theme);  // Paginator styles
+  @include mat.input-theme(theme.$light-theme);  // Ensure input theming is included
   @include mat.tooltip-theme(theme.$light-theme);
   @include mat.expansion-theme(theme.$light-theme);
 

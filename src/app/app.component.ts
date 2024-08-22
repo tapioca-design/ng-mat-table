@@ -1,21 +1,21 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { MatIconButton } from '@angular/material/button';
-import {
-  MatError,
-  MatFormField,
-  MatSuffix,
-} from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+// material : 
+import { MatFormFieldModule, MatError,  MatFormField,  MatSuffix,} from '@angular/material/form-field';
 import { MatTable } from '@angular/material/table';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatIconButton } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { SelectionModel } from '@angular/cdk/collections';
-import { FormsModule } from '@angular/forms';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatInput } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 
 
 export interface UserData {
@@ -66,19 +66,29 @@ const ELEMENT_DATA: UserData[] = [
   imports: [
     CommonModule,
     RouterOutlet,
+    // FormsModule,
+    // DecimalPipe,
+
+    // MatFormField,
+    // MatIconButton,
+    // MatSuffix,
+
     MatTableModule,
-    MatSortModule,
-    MatFormField,
-    MatError,
-    MatIconButton,
     MatTable,
-    MatSuffix,
-    DecimalPipe,
+    MatSortModule,
+    
     MatCheckboxModule,
+    
+    MatInput,
     MatInputModule,
+
     MatPaginator,
     MatPaginatorModule,
-    FormsModule,
+    
+    MatFormFieldModule,
+    MatError,
+
+    MatSlideToggleModule
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
