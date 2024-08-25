@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 // material : 
-import { MatFormFieldModule, MatError,  MatFormField,  MatSuffix,} from '@angular/material/form-field';
+import { MatFormFieldModule, MatError, MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatTable } from '@angular/material/table';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -15,7 +15,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatInput } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 
 export interface MendeleevData {
   id: string;
@@ -24,7 +24,6 @@ export interface MendeleevData {
   color: string;
 }
 
-// { id: '1', name: 'Hydrogen', progress: '10%', color: 'lightblue' },
 const ELEMENT_DATA: MendeleevData[] = [
   { id: '1', name: 'Hydrogen', progress: '10%', color: 'lightblue' },
   { id: '2', name: 'Helium', progress: '20%', color: 'lightgreen' },
@@ -85,25 +84,28 @@ const ELEMENT_DATA: MendeleevData[] = [
 export class AppComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['select', 'id', 'name', 'progress', 'color'];
   dataSource = new MatTableDataSource<MendeleevData>(ELEMENT_DATA);
-  // colorList: string[] = ELEMENT_DATA.map(item => item.color); 
-  // unique values and sorted alphabetically
   colorList: string[] = Array.from(new Set(ELEMENT_DATA.map(item => item.color))).sort((a, b) => a.localeCompare(b));
-  // colorList: string[] = this.dataSource.data.map(item => item.color);
   selection = new SelectionModel<MendeleevData>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   filterValue: string = '';
 
+  selectedColors = new FormControl<string[]>([]); // Multiple selection control for colors
+
   ngOnInit() {
-    // Other initialization code if needed
-    this.selectedColors.valueChanges.subscribe(selectedValues => {
-      console.log('selectedValues:', selectedValues);
-      // this.applyColorFilter(selectedValues);
-    });
+    // Initialize the filter predicate to account for both filters
     this.dataSource.filterPredicate = (data: MendeleevData, filter: string) => {
-      return data.name.toLowerCase().includes(filter.toLowerCase());
+      const [nameFilter, colorsFilter] = filter.split('$');
+      const matchName = data.name.toLowerCase().includes(nameFilter);
+      const selectedColors = colorsFilter ? colorsFilter.split(',') : [];
+      const matchColor = selectedColors.length === 0 || selectedColors.includes(data.color);
+      return matchName && matchColor;
     };
 
+    // Reapply the filter when the selected colors change
+    this.selectedColors.valueChanges.subscribe(() => {
+      this.applyFilter();
+    });
   }
 
   ngAfterViewInit() {
@@ -111,19 +113,20 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  /*************** */
-
-  selectedColors = new FormControl('');
-
   filterByName(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.filterValue = filterValue;
+    this.applyFilter();
+  }
 
+  applyFilter() {
+    // Combine both filters into a single string, separating by $
+    const colorFilterString = this.selectedColors.value?.join(',');
+    this.dataSource.filter = `${this.filterValue}$${colorFilterString}`;
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
   }
-
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -141,8 +144,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${
-      row.id + 1
-    }`;
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 }

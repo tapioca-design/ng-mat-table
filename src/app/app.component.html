@@ -15,9 +15,7 @@
 <mat-form-field>
   <mat-label>Colors</mat-label>
   <mat-select [formControl]="selectedColors" multiple>
-    @for (color of colorList; track color) {
-      <mat-option [value]="color">{{color}}</mat-option>
-    }
+    <mat-option *ngFor="let color of colorList" [value]="color">{{color}}</mat-option>
   </mat-select>
 </mat-form-field>
 
