@@ -17,8 +17,6 @@ import { MatInput } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
 
-
-
 export interface MendeleevData {
   id: string;
   name: string;
@@ -68,32 +66,19 @@ const ELEMENT_DATA: MendeleevData[] = [
   imports: [
     CommonModule,
     RouterOutlet,
-    // FormsModule,
-    // DecimalPipe,
-
-    // MatFormField,
-    // MatIconButton,
-    // MatSuffix,
-
     MatSelectModule, 
     FormsModule, 
     ReactiveFormsModule,
-
     MatTableModule,
     MatTable,
     MatSortModule,
-    
     MatCheckboxModule,
-    
     MatInput,
     MatInputModule,
-
     MatPaginator,
     MatPaginatorModule,
-    
     MatFormFieldModule,
     MatError,
-
     MatSlideToggleModule
   ],
 })
@@ -103,21 +88,22 @@ export class AppComponent implements OnInit, AfterViewInit {
   // colorList: string[] = ELEMENT_DATA.map(item => item.color); 
   // unique values and sorted alphabetically
   colorList: string[] = Array.from(new Set(ELEMENT_DATA.map(item => item.color))).sort((a, b) => a.localeCompare(b));
-  
   // colorList: string[] = this.dataSource.data.map(item => item.color);
   selection = new SelectionModel<MendeleevData>(true, []);
-
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
   filterValue: string = '';
 
   ngOnInit() {
     // Other initialization code if needed
     this.selectedColors.valueChanges.subscribe(selectedValues => {
       console.log('selectedValues:', selectedValues);
-      this.applyColorFilter(selectedValues);
+      // this.applyColorFilter(selectedValues);
     });
+    this.dataSource.filterPredicate = (data: MendeleevData, filter: string) => {
+      return data.name.toLowerCase().includes(filter.toLowerCase());
+    };
+
   }
 
   ngAfterViewInit() {
@@ -127,35 +113,15 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   /*************** */
 
-
   selectedColors = new FormControl('');
-  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
 
-
-  applyFilter(event: Event) {
-    // input text on name column
+  filterByName(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-    // multi select on color column
-    // if (this.selectedColors && this.selectedColors.value && this.selectedColors.value.length > 0) {
-    //   this.dataSource.filter = this.selectedColors.value;
-    // } 
-    // pagination
+
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
-  }
-
-
-  // applyColorFilter(selectedValues: string[]) {
-  applyColorFilter(selectedValues: any) {
-    if (selectedValues && selectedValues.length > 0) {
-      this.dataSource.data = ELEMENT_DATA.filter(item => selectedValues.includes(item.color));
-    } 
-    // else {
-    //   // If no colors are selected, reset to the full list
-    //   this.dataSource.data = ELEMENT_DATA;
-    // }
   }
 
 
@@ -180,7 +146,3 @@ export class AppComponent implements OnInit, AfterViewInit {
     }`;
   }
 }
-// export class SelectMultipleExample {
-//   toppings = new FormControl('');
-//   toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
-// }
