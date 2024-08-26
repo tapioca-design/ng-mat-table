@@ -19,13 +19,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { UniquePipe } from '../unique.pipe';
 import { SortAlphabeticallyPipe } from '../sort-alphabetically.pipe';
 
-export interface MendeleevData {
-  id: string;
-  name: string;
-  progress: string;
-  color: string;
-  [key: string]: any;
-}
+// export interface MendeleevData {
+//   id: string;
+//   name: string;
+//   progress: string;
+//   color: string;
+//   [key: string]: any;
+// }
+
+
 
 @Component({
   selector: 'ec-table',
@@ -55,9 +57,9 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   // displayedColumns: string[] = ['select', 'id', 'name', 'progress', 'color', 'discoverer'];
   displayedColumns: string[] = [];
-  dataSource = new MatTableDataSource<MendeleevData>();
+  dataSource = new MatTableDataSource<any>();
   colorList?: string[];
-  selection = new SelectionModel<MendeleevData>(true, []);
+  selection = new SelectionModel<any>(true, []);
   filterValues: { [key: string]: string } = {}; // To hold the current filter values
   selectedOptions: { [key: string]: FormControl<string[] | null> } = {}; // Dynamic controls for multi-select menus
 
@@ -68,23 +70,26 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     // Initialize data from signal
-    this.dataSource.data = this.dataRaw() as MendeleevData[];
-
+    this.dataSource.data = this.dataRaw() as any[];
+  
+    // Dynamically determine the columns from the JSON keys, excluding "select"
+    if (this.dataSource.data.length > 0) {
+      const keys = Object.keys(this.dataSource.data[0]).filter(key => key !== 'select');
+      this.displayedColumns = ['select', ...keys]; // Add 'select' manually for the selection column
+    }
+  
     // Extract unique values for each select menu property
     this.propertiesSearchableWithSelectMenu()?.forEach(property => {
-      // console.log("property", property);
-      // const uniqueValues = Array.from(new Set(this.dataSource.data.map(item => item[property]))).sort();
-      // console.log("uniqueValues", uniqueValues);
       this.selectedOptions[property] = new FormControl<string[]>([]); // Initialize FormControl for multi-select
-
+  
       // Watch for changes in each select menu
       this.selectedOptions[property].valueChanges.subscribe(() => {
         this.applyFilter();
       });
     });
-
+  
     // Initialize the filter predicate to account for both input text and select menu filters
-    this.dataSource.filterPredicate = (data: MendeleevData, filter: string) => {
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
       const filters = filter.split('_DIVIDER_');
       // Check text inputs
       const textFilterMatches = this.propertiesSearchableWithInputText()?.every((property, index) => {
@@ -97,13 +102,6 @@ export class TableComponent implements OnInit, AfterViewInit {
       });
       return !!textFilterMatches && !!selectFilterMatches;
     };
-
-    // Extract columns from the first object in dataRaw
-    if (this.dataSource.data.length > 0) {
-      const keys = Object.keys(this.dataSource.data[0]);
-      // add columns to display : 'select', 'id', 'name', 'progress', 'color', 'discoverer, etc.
-      this.displayedColumns = ['select', ...keys]; // Add 'select' for the selection column
-    }
   }
 
   ngAfterViewInit() {
@@ -140,7 +138,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       : this.dataSource.data.forEach((row) => this.selection.select(row));
   }
 
-  checkboxLabel(row?: MendeleevData): string {
+  checkboxLabel(row?: any): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
