@@ -17,6 +17,7 @@ import { MatInput } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { UniquePipe } from '../unique.pipe';
+import { SortAlphabeticallyPipe } from '../sort-alphabetically.pipe';
 
 export interface MendeleevData {
   id: string;
@@ -43,7 +44,8 @@ export interface MendeleevData {
     MatCheckboxModule,
     FormsModule,
     ReactiveFormsModule,
-    UniquePipe
+    UniquePipe,
+    SortAlphabeticallyPipe
   ],
 })
 export class TableComponent implements OnInit, AfterViewInit {
@@ -51,7 +53,8 @@ export class TableComponent implements OnInit, AfterViewInit {
   propertiesSearchableWithInputText = input<string[]>();  // Signal input for searchable properties with text input
   propertiesSearchableWithSelectMenu = input<string[]>();  // Signal input for searchable properties with select menu
 
-  displayedColumns: string[] = ['select', 'id', 'name', 'progress', 'color', 'discoverer'];
+  // displayedColumns: string[] = ['select', 'id', 'name', 'progress', 'color', 'discoverer'];
+  displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<MendeleevData>();
   colorList?: string[];
   selection = new SelectionModel<MendeleevData>(true, []);
@@ -61,13 +64,17 @@ export class TableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  /* hooks ********************** */
+
   ngOnInit() {
     // Initialize data from signal
     this.dataSource.data = this.dataRaw() as MendeleevData[];
 
     // Extract unique values for each select menu property
     this.propertiesSearchableWithSelectMenu()?.forEach(property => {
-      const uniqueValues = Array.from(new Set(this.dataSource.data.map(item => item[property]))).sort();
+      // console.log("property", property);
+      // const uniqueValues = Array.from(new Set(this.dataSource.data.map(item => item[property]))).sort();
+      // console.log("uniqueValues", uniqueValues);
       this.selectedOptions[property] = new FormControl<string[]>([]); // Initialize FormControl for multi-select
 
       // Watch for changes in each select menu
@@ -79,20 +86,24 @@ export class TableComponent implements OnInit, AfterViewInit {
     // Initialize the filter predicate to account for both input text and select menu filters
     this.dataSource.filterPredicate = (data: MendeleevData, filter: string) => {
       const filters = filter.split('_DIVIDER_');
-      
       // Check text inputs
       const textFilterMatches = this.propertiesSearchableWithInputText()?.every((property, index) => {
         return data[property].toString().toLowerCase().includes(filters[index]);
       });
-
       // Check multi-select menus
       const selectFilterMatches = this.propertiesSearchableWithSelectMenu()?.every((property, index) => {
         const selectedValues = filters[(this.propertiesSearchableWithInputText()?.length || 0) + index];
         return !selectedValues || selectedValues.split(',').includes(data[property]);
       });
-
       return !!textFilterMatches && !!selectFilterMatches;
     };
+
+    // Extract columns from the first object in dataRaw
+    if (this.dataSource.data.length > 0) {
+      const keys = Object.keys(this.dataSource.data[0]);
+      // add columns to display : 'select', 'id', 'name', 'progress', 'color', 'discoverer, etc.
+      this.displayedColumns = ['select', ...keys]; // Add 'select' for the selection column
+    }
   }
 
   ngAfterViewInit() {
@@ -109,7 +120,9 @@ export class TableComponent implements OnInit, AfterViewInit {
   applyFilter() {
     const textFilterString = (this.propertiesSearchableWithInputText() ?? []).map(property => this.filterValues[property] || '').join('_DIVIDER_');
     const selectFilterString = (this.propertiesSearchableWithSelectMenu() ?? []).map(property => this.selectedOptions[property].value?.join(',') || '').join('_DIVIDER_');
+    // console.log("selectFilterString", selectFilterString);
     this.dataSource.filter = `${textFilterString}_DIVIDER_${selectFilterString}`;
+    console.log("dataSource.filter", this.dataSource.filter);
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
