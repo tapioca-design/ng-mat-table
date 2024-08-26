@@ -71,23 +71,20 @@ export class TableComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     // Initialize data from signal
     this.dataSource.data = this.dataRaw() as any[];
-  
-    // Dynamically determine the columns from the JSON keys, excluding "select"
-    if (this.dataSource.data.length > 0) {
-      const keys = Object.keys(this.dataSource.data[0]).filter(key => key !== 'select');
-      this.displayedColumns = ['select', ...keys]; // Add 'select' manually for the selection column
-    }
-  
+
     // Extract unique values for each select menu property
     this.propertiesSearchableWithSelectMenu()?.forEach(property => {
+      // console.log("property", property);
+      // const uniqueValues = Array.from(new Set(this.dataSource.data.map(item => item[property]))).sort();
+      // console.log("uniqueValues", uniqueValues);
       this.selectedOptions[property] = new FormControl<string[]>([]); // Initialize FormControl for multi-select
-  
+
       // Watch for changes in each select menu
       this.selectedOptions[property].valueChanges.subscribe(() => {
         this.applyFilter();
       });
     });
-  
+
     // Initialize the filter predicate to account for both input text and select menu filters
     this.dataSource.filterPredicate = (data: any, filter: string) => {
       const filters = filter.split('_DIVIDER_');
@@ -102,6 +99,13 @@ export class TableComponent implements OnInit, AfterViewInit {
       });
       return !!textFilterMatches && !!selectFilterMatches;
     };
+
+    // Extract columns from the first object in dataRaw
+    if (this.dataSource.data.length > 0) {
+      const keys = Object.keys(this.dataSource.data[0]);
+      // add columns to display : 'select', 'id', 'name', 'progress', 'color', 'discoverer, etc.
+      this.displayedColumns = ['select', ...keys]; // Add 'select' for the selection column
+    }
   }
 
   ngAfterViewInit() {
