@@ -1,0 +1,122 @@
+[
+    {
+        "ID": "2",
+        "Name": "AB Svenska Spel",
+        "Member_Type": "Regular Member",
+        "Region": "Europe / The Middle East",
+        "Last_Change": "2020-08-13 17:55",
+        "Status": "Published",
+        "Hide_record_on_website": true,
+        "Lock_Member_Entry": false,
+        "Exclude_from_aggregation": false,
+        "Actions": ""
+    },
+    {
+        "ID": "7",
+        "Name": "AS Eesti Loto",
+        "Member_Type": "Regular Member",
+        "Region": "Europe / The Middle East",
+        "Last_Change": "2020-07-26 11:46",
+        "Status": "Published",
+        "Hide_record_on_website": true,
+        "Lock_Member_Entry": false,
+        "Exclude_from_aggregation": false,
+        "Actions": ""
+    },
+    {
+        "ID": "8",
+        "Name": "Asociación de Loterías, Quinielas y Casinos Estatales de Argentina (A.L.E.A.)",
+        "Member_Type": "Regular Member",
+        "Region": "Latin America",
+        "Last_Change": "2020-08-06 18:24",
+        "Status": "Published",
+        "Hide_record_on_website": true,
+        "Lock_Member_Entry": false,
+        "Exclude_from_aggregation": false,
+        "Actions": ""
+    },
+    {
+        "ID": "9",
+        "Name": "Atlantic Lottery Corporation",
+        "Member_Type": "Regular Member",
+        "Region": "North America / The Caribbean",
+        "Last_Change": "2020-08-05 08:54",
+        "Status": "Published",
+        "Hide_record_on_website": true,
+        "Lock_Member_Entry": false,
+        "Exclude_from_aggregation": false,
+        "Actions": ""
+    },
+    {
+        "ID": "11",
+        "Name": "Banca de Cubierta Colectiva de Quinielas de Montevideo",
+        "Member_Type": "Regular Member",
+        "Region": "Latin America",
+        "Last_Change": "2020-08-06 18:43",
+        "Status": "Published",
+        "Hide_record_on_website": true,
+        "Lock_Member_Entry": false,
+        "Exclude_from_aggregation": false,
+        "Actions": ""
+    },
+    {
+        "ID": "12",
+        "Name": "BCLC (British Columbia Lottery Corporation)",
+        "Member_Type": "Regular Member",
+        "Region": "North America / The Caribbean",
+        "Last_Change": "2020-08-05 10:16",
+        "Status": "Published",
+        "Hide_record_on_website": true,
+        "Lock_Member_Entry": false,
+        "Exclude_from_aggregation": false,
+        "Actions": ""
+    },
+    {
+        "ID": "18",
+        "Name": "Bremer Toto und Lotto GmbH",
+        "Member_Type": "Regular Member",
+        "Region": "Europe / The Middle East",
+        "Last_Change": "2020-07-26 12:01",
+        "Status": "Published",
+        "Hide_record_on_website": true,
+        "Lock_Member_Entry": false,
+        "Exclude_from_aggregation": false,
+        "Actions": ""
+    },
+    {
+        "ID": "19",
+        "Name": "Bulgarian Sports Totalizator (Sports Toto)",
+        "Member_Type": "Regular Member",
+        "Region": "Europe / The Middle East",
+        "Last_Change": "2020-07-26 12:13",
+        "Status": "Published",
+        "Hide_record_on_website": true,
+        "Lock_Member_Entry": false,
+        "Exclude_from_aggregation": false,
+        "Actions": ""
+    },
+    {
+        "ID": "20",
+        "Name": "Caixa Econômica Federal",
+        "Member_Type": "Regular Member",
+        "Region": "Latin America",
+        "Last_Change": "2020-08-06 19:03",
+        "Status": "Published",
+        "Hide_record_on_website": true,
+        "Lock_Member_Entry": false,
+        "Exclude_from_aggregation": false,
+        "Actions": ""
+    },
+    {
+        "ID": "21",
+        "Name": "California State Lottery",
+        "Member_Type": "Regular Member",
+        "Region": "North America / The Caribbean",
+        "Last_Change": "2020-08-05 10:28",
+        "Status": "Published",
+        "Hide_record_on_website": true,
+        "Lock_Member_Entry": false,
+        "Exclude_from_aggregation": false,
+        "Actions": ""
+    }
+]

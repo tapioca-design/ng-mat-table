@@ -1,7 +1,22 @@
-<h1>Mat table</h1>
-
+<h1>Mendeleev</h1>
 <ec-table 
-[dataRaw]="dataRaw" 
+[dataRaw]="dataRawMendeleev" 
 [propertiesSearchableWithInputText]="['name', 'progress']" 
 [propertiesSearchableWithSelectMenu]="['color', 'discoverer']" 
+/>
+
+<hr>
+
+<h1>Staff overview</h1>
+<ec-table 
+[dataRaw]="dataRawStaffOverview" 
+/>
+
+<hr>
+
+<h1>View forms</h1>
+<ec-table 
+[dataRaw]="dataRawStaffOverview" 
+[propertiesSearchableWithInputText]="['Name', 'progress']" 
+[propertiesSearchableWithSelectMenu]="['Member_Type', 'Status']" 
 />

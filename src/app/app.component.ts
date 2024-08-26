@@ -41,5 +41,10 @@ export interface MendeleevDataStructure {
 export class AppComponent  {
 
   
-  dataRaw = MendeleevData as any[];
+  dataRawMendeleev = MendeleevData as any[];
+  dataRawStaffOverview = StaffOverviewData as any[];
+  dataRawViewForms = StaffOverviewData as any[];
+
+
+
 }
