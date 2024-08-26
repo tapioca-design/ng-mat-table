@@ -57,6 +57,7 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   // displayedColumns: string[] = ['select', 'id', 'name', 'progress', 'color', 'discoverer'];
   displayedColumns: string[] = [];
+  displayedColumnsWithSelectColumn: string[] = [];
   dataSource = new MatTableDataSource<any>();
   colorList?: string[];
   selection = new SelectionModel<any>(true, []);
@@ -69,6 +70,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   /* hooks ********************** */
 
   ngOnInit() {
+    // console.log("ngOnInit");
     // Initialize data from signal
     this.dataSource.data = this.dataRaw() as any[];
 
@@ -101,10 +103,19 @@ export class TableComponent implements OnInit, AfterViewInit {
     };
 
     // Extract columns from the first object in dataRaw
+    // 
     if (this.dataSource.data.length > 0) {
+      console.log("will create columns");
       const keys = Object.keys(this.dataSource.data[0]);
+      // console.log("keys", keys);
       // add columns to display : 'select', 'id', 'name', 'progress', 'color', 'discoverer, etc.
-      this.displayedColumns = ['select', ...keys]; // Add 'select' for the selection column
+      this.displayedColumns = [...keys]; 
+      this.displayedColumnsWithSelectColumn = ['select', ...keys]; 
+      // this.displayedColumns = [...keys]; 
+      
+      // this.displayedColumns = [...keys]; 
+      // Add 'select' for the selection column
+      console.log("displayedColumns", this.displayedColumns);
     }
   }
 
