@@ -3,20 +3,30 @@
 [dataRaw]="dataRawMendeleev" 
 [propertiesSearchableWithInputText]="['name', 'progress']" 
 [propertiesSearchableWithSelectMenu]="['color', 'discoverer']" 
+[functionForSelectedRows]="functionForSelectedRows"
 />
 
 <hr>
+<hr>
+<hr>
+<hr>
+<hr>
 
-<!-- <h1>Staff overview</h1>
+<h1>Staff overview</h1>
 <ec-table 
 [dataRaw]="dataRawStaffOverview" 
 />
 
+<hr>
+<hr>
+<hr>
+<hr>
 <hr>
 
 <h1>View forms</h1>
 <ec-table 
-[dataRaw]="dataRawStaffOverview" 
+[dataRaw]="dataRawViewForms" 
 [propertiesSearchableWithInputText]="['Name']" 
 [propertiesSearchableWithSelectMenu]="['Member_Type', 'Status']" 
-/> -->
+[functionForSelectedRows]="functionForSelectedRows"
+/>

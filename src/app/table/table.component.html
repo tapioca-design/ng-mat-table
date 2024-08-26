@@ -26,15 +26,18 @@
 
 <hr>
 
+<button *ngIf="isFirstColumnSelectable" mat-raised-button color="primary" (click)="getSelectedRows()">Get selected rows</button>
+<!-- <button mat-flat-button>test</button> -->
 
 <hr>
+
 
 <!-- Table -->
 <table mat-table [dataSource]="dataSource" matSort>
     <!-- Checkbox Column -->
 
 
-    <ng-container matColumnDef="select">
+    <ng-container *ngIf="isFirstColumnSelectable" matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="isAllSelected()"
                 [indeterminate]="selection.hasValue() && !isAllSelected()">
@@ -55,8 +58,8 @@
 
 
     <!-- Header and Row Declarations -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumnsWithSelectColumn"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumnsWithSelectColumn;" (click)="selection.toggle(row)">
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsWithOptions"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsWithOptions;" (click)="selection.toggle(row)">
     </tr>
 </table>
 

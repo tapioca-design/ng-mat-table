@@ -11,6 +11,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatIconButton } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatInput } from '@angular/material/input';
@@ -18,16 +19,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { UniquePipe } from '../unique.pipe';
 import { SortAlphabeticallyPipe } from '../sort-alphabetically.pipe';
-
-// export interface MendeleevData {
-//   id: string;
-//   name: string;
-//   progress: string;
-//   color: string;
-//   [key: string]: any;
-// }
-
-
 
 @Component({
   selector: 'ec-table',
@@ -44,6 +35,7 @@ import { SortAlphabeticallyPipe } from '../sort-alphabetically.pipe';
     MatSelectModule,
     MatInputModule,
     MatCheckboxModule,
+    MatButton,
     FormsModule,
     ReactiveFormsModule,
     UniquePipe,
@@ -54,33 +46,31 @@ export class TableComponent implements OnInit, AfterViewInit {
   dataRaw = input<any[]>();  // Signal input for raw data
   propertiesSearchableWithInputText = input<string[]>();  // Signal input for searchable properties with text input
   propertiesSearchableWithSelectMenu = input<string[]>();  // Signal input for searchable properties with select menu
-
-  // displayedColumns: string[] = ['select', 'id', 'name', 'progress', 'color', 'discoverer'];
   displayedColumns: string[] = [];
-  displayedColumnsWithSelectColumn: string[] = [];
+  displayedColumnsWithOptions: string[] = [];
   dataSource = new MatTableDataSource<any>();
+  // this will handle checkboxes in the first column
+  functionForSelectedRows = input<Function | null>(null);
+  // if selected rows are to be used, then the first column should be selectable
+  isFirstColumnSelectable?:boolean;
   colorList?: string[];
   selection = new SelectionModel<any>(true, []);
   filterValues: { [key: string]: string } = {}; // To hold the current filter values
   selectedOptions: { [key: string]: FormControl<string[] | null> } = {}; // Dynamic controls for multi-select menus
-
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   /* hooks ********************** */
-
   ngOnInit() {
-    // console.log("ngOnInit");
-    // Initialize data from signal
-    this.dataSource.data = this.dataRaw() as any[];
 
+    this.isFirstColumnSelectable = !!this.functionForSelectedRows();
+
+    console.log("we have functionForSelectedRows", this.functionForSelectedRows(), "isFirstColumnSelectable", this.isFirstColumnSelectable);
+
+    this.dataSource.data = this.dataRaw() as any[];
     // Extract unique values for each select menu property
     this.propertiesSearchableWithSelectMenu()?.forEach(property => {
-      // console.log("property", property);
-      // const uniqueValues = Array.from(new Set(this.dataSource.data.map(item => item[property]))).sort();
-      // console.log("uniqueValues", uniqueValues);
       this.selectedOptions[property] = new FormControl<string[]>([]); // Initialize FormControl for multi-select
-
       // Watch for changes in each select menu
       this.selectedOptions[property].valueChanges.subscribe(() => {
         this.applyFilter();
@@ -103,19 +93,16 @@ export class TableComponent implements OnInit, AfterViewInit {
     };
 
     // Extract columns from the first object in dataRaw
-    // 
     if (this.dataSource.data.length > 0) {
-      console.log("will create columns");
+      // console.log("will create columns");
       const keys = Object.keys(this.dataSource.data[0]);
-      // console.log("keys", keys);
       // add columns to display : 'select', 'id', 'name', 'progress', 'color', 'discoverer, etc.
       this.displayedColumns = [...keys]; 
-      this.displayedColumnsWithSelectColumn = ['select', ...keys]; 
-      // this.displayedColumns = [...keys]; 
-      
-      // this.displayedColumns = [...keys]; 
-      // Add 'select' for the selection column
-      console.log("displayedColumns", this.displayedColumns);
+      // this is for first column with checkboxes
+      this.isFirstColumnSelectable && this.displayedColumnsWithOptions.push('select');
+      // this.displayedColumnsWithOptions = ['select', ...this.displayedColumns]; 
+      this.displayedColumnsWithOptions.push(...this.displayedColumns); 
+      // console.log("displayedColumns", this.displayedColumns);
     }
   }
 
@@ -148,15 +135,23 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   masterToggle() {
+    console.log("masterToggle");
     this.isAllSelected()
       ? this.selection.clear()
       : this.dataSource.data.forEach((row) => this.selection.select(row));
   }
 
   checkboxLabel(row?: any): string {
+    console.log("checkboxLabel");
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+
+  getSelectedRows() {
+    const selectedRows = this.selection.selected;
+    console.log('Selected Rows:', selectedRows);
+    // You can also perform other actions with the selected rows here
   }
 }

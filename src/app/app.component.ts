@@ -19,6 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { TableComponent } from './table/table.component';
 import MendeleevData from './data/MendeleevData.json';  // Adjust the path if necessary
 import StaffOverviewData from './data/StaffOverviewData.json';  // Adjust the path if necessary
+import ViewFormsData from './data/ViewFormsData.json';  // Adjust the path if necessary
 
 export interface MendeleevDataStructure {
   id: string;
@@ -43,8 +44,10 @@ export class AppComponent  {
   
   dataRawMendeleev = MendeleevData as any[];
   dataRawStaffOverview = StaffOverviewData as any[];
-  dataRawViewForms = StaffOverviewData as any[];
+  dataRawViewForms = ViewFormsData as any[];
 
+
+  functionForSelectedRows = (rows:any)=>{ console.log("we handle those rows : ", rows) }
 
 
 }
