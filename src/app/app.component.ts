@@ -20,6 +20,13 @@ import { TableComponent } from './table/table.component';
 import MendeleevData from './data/MendeleevData.json';  // Adjust the path if necessary
 import StaffOverviewData from './data/StaffOverviewData.json';  // Adjust the path if necessary
 
+export interface MendeleevDataStructure {
+  id: string;
+  name: string;
+  progress: string;
+  color: string;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -31,5 +38,7 @@ import StaffOverviewData from './data/StaffOverviewData.json';  // Adjust the pa
   ],
 })
 export class AppComponent  {
+
+  
   dataRaw = MendeleevData as any[];
 }

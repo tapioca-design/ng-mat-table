@@ -1,3 +1,10 @@
+// import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+// import { MatTableDataSource } from '@angular/material/table';
+// import { MatSort } from '@angular/material/sort';
+// import { MatPaginator } from '@angular/material/paginator';
+// import { SelectionModel } from '@angular/cdk/collections';
+// import { FormControl } from '@angular/forms';
+import { Signal } from '@angular/core';
 import { Component, OnInit, ViewChild, AfterViewInit, booleanAttribute, contentChild, inject, input, } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule, DecimalPipe } from '@angular/common';
@@ -17,22 +24,13 @@ import { MatInput } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 
-
 export interface MendeleevData {
   id: string;
   name: string;
   progress: string;
   color: string;
+  [key: string]: any;
 }
-
-// export interface StaffOverviewData {
-//   id: string
-//   form: string
-//   quantity: number
-//   status: string[]
-// }
-
-// const ELEMENT_DATA: MendeleevData[] = data as MendeleevData[];
 
 @Component({
   selector: 'ec-table',
@@ -59,54 +57,37 @@ export interface MendeleevData {
   ],
 })
 export class TableComponent implements OnInit, AfterViewInit {
-  dataRaw = input<any[]>();
+  dataRaw = input<any[]>();  // Signal input for raw data
+  propertiesSearchableWithInputText = input<string[]>();  // Signal input for searchable properties
+  propertiesSearchableWithSelectMenu = input<string[]>();  // Signal input for select menu properties
 
   displayedColumns: string[] = ['select', 'id', 'name', 'progress', 'color'];
-  // dataSource = new MatTableDataSource<MendeleevData>(ELEMENT_DATA);
-  // dataSource = new MatTableDataSource<any>(this.data);
   dataSource = new MatTableDataSource<MendeleevData>();
-  /*
-  colorList: string[] = Array.from(new Set(ELEMENT_DATA.map(item => item.color))).sort((a, b) => a.localeCompare(b));
-  selection = new SelectionModel<MendeleevData>(true, []);
-  */
   colorList?: string[];
-  
-
   selection = new SelectionModel<MendeleevData>(true, []);
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  filterValue: string = '';
-
-  /* data ******************** */
-
-  // control = input.required<FormControl<string | number | null>>();
-  // label = input<string>();
-  // placeholder = input<string>('');
-  // suffix = input<string>('');
-  // type = input<InputType>('text');
-  // previousLabel = input<string>();
-  // previousValue = input<string | number | null>();
-  // previousSuffix = input<string>('');
-
-  /* data ******************** */
-
+  filterValues: { [key: string]: string } = {}; // To hold the current filter values
   selectedColors = new FormControl<string[]>([]); // Multiple selection control for colors
 
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   ngOnInit() {
+    // Initialize data from signal
+    this.dataSource.data = this.dataRaw() as MendeleevData[];
 
-    // this.dataSource = this.data
-    this.dataSource.data = this.dataRaw() as any[];
+    // Extract unique colors for the color filter
+    this.colorList = Array.from(new Set(this.dataSource.data.map(item => item.color))).sort();
 
-    this.colorList = Array.from(new Set((this.dataRaw() as any[]).map(item => item.color))).sort((a, b) => a.localeCompare(b));
-
-    // Initialize the filter predicate to account for both filters
-    // this.dataSource.filterPredicate = (data: MendeleevData, filter: string) => {
+    // Initialize the filter predicate to account for both input text and color filters
     this.dataSource.filterPredicate = (data: MendeleevData, filter: string) => {
-      const [nameFilter, colorsFilter] = filter.split('$');
-      const matchName = data.name.toLowerCase().includes(nameFilter);
-      const selectedColors = colorsFilter ? colorsFilter.split(',') : [];
-      const matchColor = selectedColors.length === 0 || selectedColors.includes(data.color);
-      return matchName && matchColor;
+      const filters = filter.split('_DIVIDER_');
+      const textFilterMatches = this.propertiesSearchableWithInputText && this.propertiesSearchableWithInputText()?.every((property, index) => {
+        return data[property].toString().toLowerCase().includes(filters[index]);
+      });
+      const selectedColors = filters[this.propertiesSearchableWithInputText()?.length || 0];
+      const colorFilterMatches = selectedColors ? selectedColors.split(',').includes(data.color) : true;
+    
+      return !!textFilterMatches && !!colorFilterMatches; // Ensure boolean values are returned
     };
 
     // Reapply the filter when the selected colors change
@@ -116,22 +97,20 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-
-
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
 
-  filterByName(event: Event) {
+  filterFromTextInput(event: Event, property: string) {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    this.filterValue = filterValue;
+    this.filterValues[property] = filterValue;
     this.applyFilter();
   }
 
   applyFilter() {
-    // Combine both filters into a single string, separating by $
+    const filterString = (this.propertiesSearchableWithInputText() ?? []).map(property => this.filterValues[property] || '').join('_DIVIDER_');
     const colorFilterString = this.selectedColors.value?.join(',');
-    this.dataSource.filter = `${this.filterValue}$${colorFilterString}`;
+    this.dataSource.filter = `${filterString}_DIVIDER_${colorFilterString}`;
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
