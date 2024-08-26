@@ -25,6 +25,7 @@ export interface MendeleevDataStructure {
   name: string;
   progress: string;
   color: string;
+  discoverer: string;
 }
 
 @Component({
