@@ -1,24 +1,14 @@
-
-    [
-        {
-            "id": "1",
-            "form": "Compendium 2015",
-            "quantity": 233,
-            "status": [
-                "1 Draft", 
-                "1 Rework", 
-                "111 Published", 
-                "120 No record" 
-            ]
-        },
-        {
-            "id": "1",
-            "form": "Compendium 2016",
-            "quantity": 153,
-            "status": [
-                "53 Rework", 
-                "177 No record" 
-            ]
-        }
-       
-    ]
+[
+  {
+    "formName": "Compendium 2015",
+    "quantity": 233
+  },
+  {
+    "formName": "Compendium 2016",
+    "quantity": 153
+  },
+  {
+    "formName": "Compendium 2017",
+    "quantity": 660
+  }
+]

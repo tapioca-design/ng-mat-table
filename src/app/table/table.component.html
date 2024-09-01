@@ -1,66 +1,30 @@
-<!-- Dynamic input fields for each searchable property -->
-<div *ngFor="let propertySearchable of propertiesSearchableWithInputText()">
-    <div class="filter-container">
-        <mat-form-field appearance="fill">
-            <mat-label>Filter by {{propertySearchable}}</mat-label>
-            <input matInput (keyup)="filterFromTextInput($event, propertySearchable)" placeholder="Ex. Hydrogen">
-        </mat-form-field>
-    </div>
-</div>
-
-<hr>
-
-<!-- Dynamic multi-select menus for each searchable property -->
-<div *ngFor="let propertySearchable of propertiesSearchableWithSelectMenu()">
-    <mat-form-field appearance="fill">
-        <mat-label>{{propertySearchable}}</mat-label>
-        <mat-select [formControl]="selectedOptions[propertySearchable]" multiple>
-            <mat-option
-                *ngFor="let option of dataSource.data | unique:propertySearchable | sortAlphabetically:propertySearchable"
-                [value]="option[propertySearchable]">
-                {{option[propertySearchable]}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-</div>
-
-<hr>
-
-<button *ngIf="isFirstColumnSelectable" mat-raised-button color="primary" (click)="getSelectedRows()">Get selected rows</button>
-<!-- <button mat-flat-button>test</button> -->
-
-<hr>
-
-
 <!-- Table -->
 <table mat-table [dataSource]="dataSource" matSort>
-    <!-- Checkbox Column -->
+  <!-- Custom Header for the First Data Column -->
+  <ng-container matColumnDef="formName">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>a1a1a1</th>
+    <td mat-cell *matCellDef="let element">{{ element.formName }}</td>
+  </ng-container>
 
+  <!-- Custom Header for the Second Data Column -->
+  <ng-container matColumnDef="quantity">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>b2b2b2b</th>
+    <td mat-cell *matCellDef="let element">{{ element.quantity }}</td>
+  </ng-container>
 
-    <ng-container *ngIf="isFirstColumnSelectable" matColumnDef="select">
-        <th mat-header-cell *matHeaderCellDef>
-            <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="isAllSelected()"
-                [indeterminate]="selection.hasValue() && !isAllSelected()">
-            </mat-checkbox>
-        </th>
-        <td mat-cell *matCellDef="let row">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
-                [checked]="selection.isSelected(row)">
-            </mat-checkbox>
-        </td>
-    </ng-container>
+  <!-- Custom Column 1 -->
+  <ng-container matColumnDef="colTest1">
+    <th *matHeaderCellDef mat-header-cell>a8a8a8a8a8</th>
+    <td *matCellDef="let entity" mat-cell>SameA ( {{ entity.formName }} )</td>
+  </ng-container>
 
-    <!-- data columns -->
-    <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column | titlecase }}</th>
-        <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
-    </ng-container>
+  <!-- Custom Column 2 -->
+  <ng-container matColumnDef="colTest2">
+    <th *matHeaderCellDef mat-header-cell>f7f7f7f7f7</th>
+    <td *matCellDef="let entity" mat-cell>SameB ( {{ entity.formName }} )</td>
+  </ng-container>
 
-
-    <!-- Header and Row Declarations -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumnsWithOptions"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumnsWithOptions;" (click)="selection.toggle(row)">
-    </tr>
+  <!-- Header and Row Declarations -->
+  <tr mat-header-row *matHeaderRowDef="fakeColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: fakeColumns"></tr>
 </table>
-
-<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>

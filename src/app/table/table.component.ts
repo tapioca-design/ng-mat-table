@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, booleanAttribute, contentChild, inject, input, } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, booleanAttribute, ContentChildren, contentChild, inject, input, QueryList } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -39,15 +39,18 @@ import { SortAlphabeticallyPipe } from '../sort-alphabetically.pipe';
     FormsModule,
     ReactiveFormsModule,
     UniquePipe,
-    SortAlphabeticallyPipe
+    SortAlphabeticallyPipe,
   ],
 })
 export class TableComponent implements OnInit, AfterViewInit {
+  @ContentChildren('customColumn') customColumns: QueryList<any> = new QueryList();
+
   dataRaw = input<any[]>();  // Signal input for raw data
   propertiesSearchableWithInputText = input<string[]>();  // Signal input for searchable properties with text input
   propertiesSearchableWithSelectMenu = input<string[]>();  // Signal input for searchable properties with select menu
   displayedColumns: string[] = [];
   displayedColumnsWithOptions: string[] = [];
+  fakeColumns: string[] = ["formName", "quantity","colTest1", "colTest2"];
   dataSource = new MatTableDataSource<any>();
   // this will handle checkboxes in the first column
   functionForSelectedRows = input<Function | null>(null);
@@ -62,11 +65,8 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   /* hooks ********************** */
   ngOnInit() {
-
     this.isFirstColumnSelectable = !!this.functionForSelectedRows();
-
-    console.log("we have functionForSelectedRows", this.functionForSelectedRows(), "isFirstColumnSelectable", this.isFirstColumnSelectable);
-
+    // console.log("we have functionForSelectedRows", this.functionForSelectedRows(), "isFirstColumnSelectable", this.isFirstColumnSelectable);
     this.dataSource.data = this.dataRaw() as any[];
     // Extract unique values for each select menu property
     this.propertiesSearchableWithSelectMenu()?.forEach(property => {
@@ -76,7 +76,6 @@ export class TableComponent implements OnInit, AfterViewInit {
         this.applyFilter();
       });
     });
-
     // Initialize the filter predicate to account for both input text and select menu filters
     this.dataSource.filterPredicate = (data: any, filter: string) => {
       const filters = filter.split('_DIVIDER_');
@@ -91,7 +90,6 @@ export class TableComponent implements OnInit, AfterViewInit {
       });
       return !!textFilterMatches && !!selectFilterMatches;
     };
-
     // Extract columns from the first object in dataRaw
     if (this.dataSource.data.length > 0) {
       // console.log("will create columns");
@@ -104,6 +102,11 @@ export class TableComponent implements OnInit, AfterViewInit {
       this.displayedColumnsWithOptions.push(...this.displayedColumns); 
       // console.log("displayedColumns", this.displayedColumns);
     }
+    // extra columns out from dataSource : 
+    this.customColumns?.forEach((column) => {
+      this.displayedColumns.push(column.columnDef);
+      this.displayedColumnsWithOptions.push(column.columnDef);
+    });
   }
 
   ngAfterViewInit() {
@@ -142,7 +145,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   checkboxLabel(row?: any): string {
-    console.log("checkboxLabel");
+    // console.log("checkboxLabel");
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
@@ -151,7 +154,7 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   getSelectedRows() {
     const selectedRows = this.selection.selected;
-    console.log('Selected Rows:', selectedRows);
+    // console.log('Selected Rows:', selectedRows);
     // You can also perform other actions with the selected rows here
   }
 }

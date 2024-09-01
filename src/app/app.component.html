@@ -1,21 +1,25 @@
+<!-- <ng-container matColumnDef="aaa">
+  <th mat-header-cell *matHeaderCellDef> aaa </th>
+  <td mat-cell *matCellDef="let element"> 111 </td>
+</ng-container>
+
+<ng-container matColumnDef="bbb">
+  <th mat-header-cell *matHeaderCellDef> bbb </th>
+  <td mat-cell *matCellDef="let element"> 222 </td>
+</ng-container>
+
+
 <h1>Mendeleev</h1>
 <ec-table 
-[dataRaw]="dataRawMendeleev" 
-[propertiesSearchableWithInputText]="['name', 'progress']" 
-[propertiesSearchableWithSelectMenu]="['color', 'discoverer']" 
-[functionForSelectedRows]="functionForSelectedRows"
-/>
+  [dataRaw]="dataRawMendeleev" 
+  [propertiesSearchableWithInputText]="['name', 'progress']" 
+  [propertiesSearchableWithSelectMenu]="['color', 'discoverer']" 
+  [functionForSelectedRows]="functionForSelectedRows"
+>
 
-<hr>
-<hr>
-<hr>
-<hr>
-<hr>
+</ec-table>
 
-<h1>Staff overview</h1>
-<ec-table 
-[dataRaw]="dataRawStaffOverview" 
-/>
+
 
 <hr>
 <hr>
@@ -29,4 +33,23 @@
 [propertiesSearchableWithInputText]="['Name']" 
 [propertiesSearchableWithSelectMenu]="['Member_Type', 'Status']" 
 [functionForSelectedRows]="functionForSelectedRows"
+/>
+
+
+
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+
+<hr>
+<hr>
+<hr>
+<hr>
+<hr> -->
+
+<h1>Staff overview</h1>
+<ec-table 
+[dataRaw]="dataRawStaffOverview" 
 />
